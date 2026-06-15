@@ -270,7 +270,7 @@ function go(page) {
   div.className = 'page active';
   div.id = `page-${page}`;
   app.appendChild(div);
-  ({ home: renderHome, mapa: renderMapa, missoes: renderMissoes, habilidades: renderHabilidades, financas: renderFinancas, conquistas: renderConquistas }[page] || renderHome)(div);
+  ({ home: renderHome, mapa: renderMapa, missoes: renderMissoes, habilidades: renderHabilidades, financas: renderFinancas, conquistas: renderConquistas, manual: renderManual }[page] || renderHome)(div);
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -283,7 +283,7 @@ function renderNav() {
       <span class="nav-title">MAPA DA LIBERDADE</span>
     </div>
     <ul class="nav-links">
-      ${[['home','Base'],['mapa','Mapa'],['missoes','Expedicoes'],['habilidades','Arsenal'],['financas','Tesouro'],['conquistas','Descobertas']]
+      ${[['home','Base'],['mapa','Mapa'],['missoes','Expedicoes'],['habilidades','Arsenal'],['financas','Tesouro'],['conquistas','Descobertas'],['manual','Manual']]
         .map(([p,l]) => `<li><a class="nav-link${currentPage===p?' active':''}" data-page="${p}" onclick="go('${p}')">${l}</a></li>`).join('')}
     </ul>`;
 }
@@ -1458,6 +1458,164 @@ function showLoginScreen() {
     </div>`;
 
   setTimeout(() => document.getElementById('login-input')?.focus(), 150);
+}
+
+/* ============================
+   MANUAL PAGE
+   ============================ */
+
+function renderManual(el) {
+  el.innerHTML = `
+    <div class="page-header">
+      <h1 class="page-title">MANUAL DO EXPLORADOR</h1>
+      <p class="page-subtitle">Glossário de todos os termos e hierarquias do Mapa da Liberdade.</p>
+    </div>
+
+    <div class="manual-section">
+      <div class="manual-section-title">Como tudo se encaixa</div>
+      <div class="manual-hierarchy">
+        <div class="manual-hier-item hier-1"><span class="hier-badge">Mapa da Liberdade</span><span class="hier-desc">O sistema completo — sua jornada rumo à independência</span></div>
+        <div class="manual-hier-item hier-2"><span class="hier-badge">Territórios <em>(Fases)</em></span><span class="hier-desc">8 grandes áreas do mapa, cada uma com tema e objetivo central</span></div>
+        <div class="manual-hier-item hier-3"><span class="hier-badge">Expedições <em>(Missões)</em></span><span class="hier-desc">Tarefas concretas dentro de cada Território que geram XP ao serem concluídas</span></div>
+        <div class="manual-hier-item hier-4"><span class="hier-badge">XP → Nível → Classe</span><span class="hier-desc">XP acumulado de Expedições sobe seu Nível e desbloqueia uma nova Classe (título)</span></div>
+      </div>
+    </div>
+
+    <div class="manual-section">
+      <div class="manual-section-title">Páginas do site</div>
+      <div class="manual-grid">
+        ${[
+          ['Base','home','Página inicial. Mostra seu nível, as Expedições ativas, progresso geral e os Territórios em andamento.'],
+          ['Mapa','mapa','Mapa visual de todos os Territórios em formato geográfico. Clique em qualquer local para ir às Expedições daquele Território.'],
+          ['Expedições','missoes','Todas as missões organizadas por Território. Marque o que concluiu, defina qual está em foco e acompanhe as congeladas.'],
+          ['Arsenal','habilidades','Suas habilidades profissionais em Social Media, Vídeos e Sites. Bolinhas de 0 a 5 registram seu nível em cada habilidade.'],
+          ['Tesouro','financas','Seus caixas financeiros: renda mensal, reserva, investimentos, etc. Atualize sempre que os valores mudarem.'],
+          ['Descobertas','conquistas','Conquistas automáticas desbloqueadas ao atingir marcos — primeira venda, primeiros R$500, reserva completa, etc.'],
+          ['Manual','manual','Esta página. Consulte aqui sempre que um termo confundir.'],
+        ].map(([name, page, desc]) => `
+          <div class="manual-card" onclick="go('${page}')">
+            <div class="manual-card-name">${name}</div>
+            <div class="manual-card-desc">${desc}</div>
+            <div class="manual-card-link">Ir para ${name} →</div>
+          </div>`).join('')}
+      </div>
+    </div>
+
+    <div class="manual-section">
+      <div class="manual-section-title">Territórios <em>(Fases)</em></div>
+      <p class="manual-intro">São as 8 grandes etapas da jornada. Cada um tem nome temático e objetivo central. Você avança ao completar todas as Expedições dentro dele.</p>
+      <div class="manual-table">
+        <div class="manual-table-head"><span>Território</span><span>Nome real</span><span>Local no mapa</span><span>XP</span></div>
+        ${GAME_DATA.phases.map(p => `
+          <div class="manual-table-row">
+            <span class="manual-tag">${p.icon} Território ${p.id}</span>
+            <span><strong>${p.name}</strong><br><span style="font-size:0.75rem;color:var(--tx-3);font-style:italic">${p.description}</span></span>
+            <span style="color:var(--tx-2);font-size:0.8rem">${p.location}</span>
+            <span class="manual-xp">${p.xp.toLocaleString('pt-BR')} XP</span>
+          </div>`).join('')}
+      </div>
+    </div>
+
+    <div class="manual-section">
+      <div class="manual-section-title">Tipos de Expedição</div>
+      <p class="manual-intro">As Expedições têm quatro tipos possíveis. Dois deles aparecem em destaque na Base.</p>
+      <div class="manual-grid manual-grid-2">
+        ${[
+          ['Expedição Principal','tag-main','A missão mais importante que você está focando agora. Aparece em destaque na Base. Defina nas Expedições clicando em "Definir como principal". Só uma por vez.'],
+          ['Trilha Secundária','tag-secondary','Uma segunda missão que corre em paralelo. Também aparece na Base. Útil para acompanhar objetivos de Territórios diferentes ao mesmo tempo.'],
+          ['Expedição Comum','','Qualquer missão de um Território que ainda não foi definida como principal nem secundária. Pode ser concluída normalmente mesmo assim.'],
+          ['Expedição Congelada','tag-frozen','Objetivos futuros que você quer mas ainda não é a hora. Ficam na aba "Congeladas" dentro de Expedições e têm checklists para ir preparando o terreno.'],
+        ].map(([name, tag, desc]) => `
+          <div class="manual-def-card">
+            <div style="margin-bottom:var(--s2)">${tag ? `<span class="mission-type-tag ${tag}">${name}</span>` : `<span style="font-family:var(--f-title);font-size:0.82rem;font-weight:700;color:var(--pg-text)">${name}</span>`}</div>
+            <div class="manual-card-desc">${desc}</div>
+          </div>`).join('')}
+      </div>
+    </div>
+
+    <div class="manual-section">
+      <div class="manual-section-title">XP, Nível e Classe</div>
+      <p class="manual-intro">Cada Expedição concluída dá XP proporcional ao Território (XP do Território ÷ número de missões). XP acumulado sobe seu Nível e desbloqueia sua Classe.</p>
+      <div class="manual-table">
+        <div class="manual-table-head"><span>Nível</span><span>Classe</span><span>Faixa de XP</span></div>
+        ${GAME_DATA.xpLevels.map((l, i) => {
+          const next = GAME_DATA.xpLevels[i + 1];
+          const cur = S && getLevelInfo(getXP()).level === l.level;
+          return `<div class="manual-table-row${cur ? ' manual-row-active' : ''}">
+            <span class="manual-tag">Nv ${l.level}</span>
+            <span><strong>${l.name}</strong>${cur ? ' <span class="manual-you-badge">← você</span>' : ''}</span>
+            <span style="color:var(--tx-2);font-size:0.82rem">${l.xp.toLocaleString('pt-BR')}${next ? ` – ${(next.xp-1).toLocaleString('pt-BR')}` : '+'} XP</span>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>
+
+    <div class="manual-section">
+      <div class="manual-section-title">Arsenal <em>(Habilidades)</em></div>
+      <p class="manual-intro">O Arsenal registra seu domínio em habilidades profissionais. Não afeta XP — é um mapa de autoconhecimento. As bolinhas vão de 0 (não conheço) a 5 (expert).</p>
+      <div class="manual-grid manual-grid-3">
+        ${GAME_DATA.skills.map(branch => `
+          <div class="manual-def-card">
+            <div class="manual-card-name">${branch.icon} ${branch.name}</div>
+            <div style="margin-top:var(--s2);display:flex;flex-direction:column;gap:3px">
+              ${branch.skills.map(s => `<div style="font-size:0.8rem;color:var(--tx-2)">· ${s.name}</div>`).join('')}
+            </div>
+          </div>`).join('')}
+      </div>
+      <div class="manual-note">0 = não conheço &nbsp;·&nbsp; 1 = iniciante &nbsp;·&nbsp; 2 = básico &nbsp;·&nbsp; 3 = intermediário &nbsp;·&nbsp; 4 = avançado &nbsp;·&nbsp; 5 = expert</div>
+    </div>
+
+    <div class="manual-section">
+      <div class="manual-section-title">Tesouro <em>(Caixas Financeiros)</em></div>
+      <p class="manual-intro">Organiza seu dinheiro em categorias separadas. Atualize quando os valores mudarem. Alguns têm metas — atingi-las desbloqueia Descobertas automaticamente.</p>
+      <div class="manual-table">
+        <div class="manual-table-head"><span>Caixa</span><span>O que registrar</span></div>
+        ${GAME_DATA.finances.map(f => `
+          <div class="manual-table-row">
+            <span class="manual-tag">${f.icon} ${f.label}</span>
+            <span style="font-size:0.82rem;color:var(--tx-2)">${{
+              renda_mensal: 'Quanto você ganha de fontes próprias (freelance, clientes) por mês',
+              dinheiro_livre: 'Dinheiro disponível não alocado a nenhum objetivo específico',
+              reserva: 'Reserva de emergência e liberdade. Meta inicial: R$5.000 → R$15.000',
+              fundo_aniversario: 'Dinheiro guardado para presente ou comemoração especial',
+              investimentos: 'Total em renda fixa, tesouro direto ou outras aplicações',
+              empresa: 'Caixa do negócio — receitas e despesas separadas das pessoais',
+            }[f.id] || ''}</span>
+          </div>`).join('')}
+      </div>
+    </div>
+
+    <div class="manual-section">
+      <div class="manual-section-title">Descobertas <em>(Conquistas)</em></div>
+      <p class="manual-intro">Desbloqueiam sozinhas quando você atinge marcos reais. Não há como ativar manualmente — é o sistema reconhecendo seu avanço.</p>
+      <div class="manual-ach-grid">
+        ${GAME_DATA.achievements.map(a => {
+          const unlocked = S.achievements[a.id]?.unlocked;
+          return `<div class="manual-ach ${unlocked ? 'unlocked' : 'locked'}">
+            <span style="font-size:1.4rem">${a.icon}</span>
+            <div>
+              <div style="font-family:var(--f-title);font-size:0.73rem;font-weight:700;color:${unlocked ? 'var(--green-500)' : 'var(--tx-3)'}">${a.name}</div>
+              <div style="font-size:0.7rem;color:var(--tx-3);margin-top:2px;line-height:1.4">${a.desc}</div>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>
+
+    <div class="manual-section">
+      <div class="manual-section-title">Sincronizar</div>
+      <p class="manual-intro">Conecta dois dispositivos (celular + computador, por exemplo) para que os dados fiquem iguais nos dois automaticamente via nuvem.</p>
+      <div class="manual-def-card" style="max-width:520px">
+        <div class="manual-card-name">Como conectar um novo dispositivo</div>
+        <ol style="margin-top:var(--s3);padding-left:var(--s5);display:flex;flex-direction:column;gap:var(--s2);font-size:0.85rem;color:var(--tx-2)">
+          <li>No dispositivo principal, clique em <strong>Sincronizar</strong> (rodapé) e copie o <strong>ID de sincronização</strong>.</li>
+          <li>No novo dispositivo, abra o site, clique em <strong>Sincronizar</strong> e cole o ID no campo "Conectar outro dispositivo".</li>
+          <li>Pronto — os dados ficam sincronizados automaticamente.</li>
+        </ol>
+        <div class="manual-note" style="margin-top:var(--s4)">O ID de sincronização é como a chave da sua conta. Qualquer dispositivo com o mesmo ID terá acesso aos seus dados.</div>
+      </div>
+    </div>
+  `;
 }
 
 /* ============================

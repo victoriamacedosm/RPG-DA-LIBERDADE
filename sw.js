@@ -1,6 +1,6 @@
 /* ===== SERVICE WORKER — MAPA DA LIBERDADE ===== */
 
-const CACHE = 'mapa-liberdade-v1';
+const CACHE = 'mapa-liberdade-v2';
 const LOCAL_ASSETS = [
   './',
   './index.html',
