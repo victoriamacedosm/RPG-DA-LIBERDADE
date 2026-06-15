@@ -1,63 +1,65 @@
-/* ===== RPG DA LIBERDADE — VISUAL IDENTITY v3 ===== */
-/* Diário de exploradora. Madeira e couro. Luz de âmbar.  */
+/* ===== MAPA DA LIBERDADE — VISUAL IDENTITY v4 ===== */
+/* Diário de exploradora. Pergaminho claro. Verde floresta. Mar e conquista. */
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  /* ─── FUNDOS — madeira média clara ─── */
-  --bg-page:    #5c3d20;   /* Madeira carvalho — base principal */
-  --bg-panel:   #6e4c28;   /* Painel um tom acima */
-  --bg-raised:  #7e5c34;   /* Superfície elevada */
-  --bg-inset:   #4a2e14;   /* Encaixe / detalhe mais fundo */
-  --bg-nav:     #2e1c0a;   /* Nav: ainda mais escuro para âncora visual */
+  /* ─── FUNDOS — pergaminho natural e terra ─── */
+  --bg-page:    #ede5cc;   /* Pergaminho quente — fundo geral */
+  --bg-panel:   #e4d9b8;   /* Pergaminho médio — painéis */
+  --bg-raised:  #d8c89c;   /* Areia / terra — cards secundários */
+  --bg-inset:   #c8b480;   /* Ocre — recuados / inputs */
+  --bg-nav:     #243d22;   /* Verde floresta escuro */
 
-  /* ─── PERGAMINHO — o coração visual ─── */
-  --pg-100:  #f7ecd4;   /* Pergaminho mais claro */
-  --pg-200:  #f0e0bc;   /* Pergaminho claro */
-  --pg-300:  #e4ceaa;   /* Pergaminho médio */
-  --pg-400:  #d4b888;   /* Pergaminho escuro */
-  --pg-500:  #bc9c68;   /* Pergaminho profundo */
-  --pg-text: #2a1608;   /* Texto sobre pergaminho */
-  --pg-muted:#6a4020;   /* Texto secundário sobre pergaminho */
-  --pg-dim:  #9a6a40;   /* Texto fraco sobre pergaminho */
+  /* ─── PERGAMINHO — coração visual ─── */
+  --pg-100:  #faf4e8;
+  --pg-200:  #f5ecd8;
+  --pg-300:  #e8d8b8;
+  --pg-400:  #d4bc88;
+  --pg-500:  #b89860;
+  --pg-text: #2a1808;
+  --pg-muted:#5a3818;
+  --pg-dim:  #8a6030;
 
-  /* ─── COBRE ENVELHECIDO — acento principal (substitui dourado) ─── */
-  --gold-900: #3c1e0c;   /* Cobre muito profundo */
-  --gold-700: #6e3818;   /* Cobre escuro / sombra */
-  --gold-500: #a05830;   /* Cobre médio — cor de acento principal */
-  --gold-400: #b86c40;   /* Cobre claro */
-  --gold-300: #cc8454;   /* Cobre aquecido */
-  --gold-200: #dca070;   /* Cobre pálido */
+  /* ─── DOURADO FOSCO — acento natural ─── */
+  --gold-900: #3a2410;
+  --gold-700: #6a4820;
+  --gold-500: #8a6828;
+  --gold-400: #a88040;
+  --gold-300: #c09850;
+  --gold-200: #d8b870;
 
-  /* ─── TERRACOTA — acento secundário / força ─── */
+  /* ─── VERDE FLORESTA — identidade ─── */
+  --green-700: #1a2e18;
+  --green-500: #2d4a2a;
+  --green-300: #4a6e44;
+  --green-100: #98b890;
+
+  /* ─── TERRACOTA — missão secundária ─── */
   --terra-700: #5c1e10;
   --terra-500: #8c3420;
   --terra-300: #b04830;
 
-  /* ─── VERDE FLORESTA — discreto ─── */
-  --green-700: #2a3c20;
-  --green-500: #3e5c30;
-  --green-300: #56803e;
+  /* ─── OCEANO — sonhos / XP / elementos de mapa ─── */
+  --xp:       #2a5870;
+  --xp-light: #4a80a0;
 
   /* ─── STATUS ─── */
-  --ok:        #486a38;
-  --ok-bright: #6a9a52;
-  --warn:      #a06020;
-  --err:       #8a3028;
+  --ok:        #3a5828;
+  --ok-bright: #5a8840;
+  --warn:      #8a6020;
+  --err:       #7a2818;
 
-  /* ─── XP ─── */
-  --xp:       #58368a;
-  --xp-light: #7a52aa;
-
-  /* ─── TEXTO SOBRE FUNDO MÉDIO ─── */
-  --tx-1:    #f2e8d8;   /* Primário — creme quente, suave */
-  --tx-2:    #c8a880;   /* Secundário — creme arenoso */
-  --tx-3:    #9a7858;   /* Terciário — marrom médio */
-  --tx-gold: #c07848;   /* Acento de texto — cobre, não dourado */
+  /* ─── TEXTO — escuro sobre fundos claros ─── */
+  --tx-1:    #2a1808;   /* Primário — quase preto quente */
+  --tx-2:    #5a3e20;   /* Secundário — marrom médio */
+  --tx-3:    #8a6840;   /* Terciário — marrom claro */
+  --tx-gold: #7a5820;   /* Acento de texto — dourado escuro */
 
   /* ─── TIPOGRAFIA ─── */
   --f-title: 'Cinzel', 'Palatino Linotype', 'Georgia', serif;
   --f-body:  'Lora', 'Palatino Linotype', 'Georgia', serif;
+  --f-hand:  'Caveat', 'Kalam', cursive;
 
   /* ─── ESPAÇAMENTO ─── */
   --s1: 0.25rem;  --s2: 0.5rem;  --s3: 0.75rem;  --s4: 1rem;
@@ -76,13 +78,13 @@
   --pg-lightest:  var(--pg-100);
   --pg-light:     var(--pg-200);
 
-  /* ─── SOMBRAS — sem glow, só profundidade ─── */
-  --sh-sm:   0 2px 6px rgba(20,8,0,0.35);
-  --sh-md:   0 4px 16px rgba(20,8,0,0.4);
-  --sh-lg:   0 8px 32px rgba(20,8,0,0.5);
-  --sh-gold: 0 2px 12px rgba(120,60,24,0.2);   /* sombra cobre — sutil */
-  --sh-glow: 0 4px 20px rgba(120,60,24,0.18);  /* sem brilho neon */
-  --sh-warm: 0 2px 16px rgba(100,50,20,0.12);
+  /* ─── SOMBRAS — naturais e suaves ─── */
+  --sh-sm:   0 2px 8px rgba(42,24,8,0.12);
+  --sh-md:   0 4px 18px rgba(42,24,8,0.16);
+  --sh-lg:   0 8px 36px rgba(42,24,8,0.22);
+  --sh-gold: 0 2px 12px rgba(100,70,20,0.15);
+  --sh-glow: 0 4px 20px rgba(100,70,20,0.12);
+  --sh-warm: 0 2px 16px rgba(80,50,10,0.1);
 }
 
 /* ───────────────────────────────────────────
@@ -115,18 +117,23 @@ body {
 .nav-rpg {
   position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
   height: 60px;
-  background: linear-gradient(180deg, var(--bg-nav) 0%, rgba(24,12,4,0.98) 100%);
-  border-bottom: 1px solid var(--gold-700);
-  box-shadow: 0 2px 24px rgba(16,8,0,0.7), 0 1px 0 rgba(120,70,30,0.08) inset;
+  background: linear-gradient(180deg, #2d4e2a 0%, #1e3418 100%);
+  border-bottom: 1px solid rgba(80,120,60,0.25);
+  box-shadow: 0 2px 16px rgba(10,20,8,0.4);
   display: flex; align-items: center;
-  padding: 0 var(--s7); gap: var(--s6);
+  padding: 0 var(--s6); gap: var(--s5);
+  /* ─── SCROLL HORIZONTAL ─── */
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
 }
+.nav-rpg::-webkit-scrollbar { display: none; }
+.nav-rpg { -ms-overflow-style: none; scrollbar-width: none; }
 
 .nav-rpg::after {
   content: '';
-  position: absolute; bottom: -1px; left: 0; right: 0; height: 1px;
-  background: linear-gradient(90deg, transparent 5%, var(--gold-500) 40%, var(--gold-300) 50%, var(--gold-500) 60%, transparent 95%);
-  opacity: 0.4;
+  position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent 5%, rgba(160,200,120,0.25) 50%, transparent 95%);
 }
 
 .nav-logo {
@@ -138,33 +145,33 @@ body {
 
 .nav-title {
   font-family: var(--f-title);
-  font-size: 0.92rem; font-weight: 900;
-  color: var(--gold-400);
-  letter-spacing: 0.14em;
-  text-shadow: 0 0 24px rgba(120,70,30,0.4);
+  font-size: 0.88rem; font-weight: 900;
+  color: var(--pg-200);
+  letter-spacing: 0.12em;
+  white-space: nowrap;
 }
 
-.nav-links { display: flex; list-style: none; gap: 2px; margin-left: auto; }
+.nav-links { display: flex; list-style: none; gap: 2px; margin-left: auto; flex-shrink: 0; }
 
 .nav-link {
   font-family: var(--f-title);
-  font-size: 0.68rem; font-weight: 600;
-  color: var(--tx-3);
-  padding: 6px 14px; border-radius: var(--r-sm);
-  border: 1px solid transparent; letter-spacing: 0.08em; text-transform: uppercase;
+  font-size: 0.65rem; font-weight: 600;
+  color: rgba(220,200,155,0.7);
+  padding: 6px 13px; border-radius: var(--r-sm);
+  border: 1px solid transparent; letter-spacing: 0.07em; text-transform: uppercase;
   transition: color 0.15s, background 0.15s, border-color 0.15s;
   cursor: pointer; background: none; white-space: nowrap; display: block;
 }
 
-.nav-link:hover { color: var(--gold-300); }
+.nav-link:hover { color: var(--pg-100); background: rgba(255,255,255,0.07); }
 
-.nav-logout { opacity: 0.3; font-size: 0.6rem !important; }
-.nav-logout:hover { opacity: 0.65; color: var(--tx-2) !important; }
+.nav-logout { opacity: 0.45; font-size: 0.6rem !important; }
+.nav-logout:hover { opacity: 0.8; color: var(--pg-200) !important; }
 
 .nav-link.active {
-  color: var(--gold-400);
-  background: rgba(120,70,30,0.1);
-  border-color: rgba(120,70,30,0.3);
+  color: var(--pg-100);
+  background: rgba(255,255,255,0.12);
+  border-color: rgba(255,255,255,0.2);
 }
 
 /* ───────────────────────────────────────────
