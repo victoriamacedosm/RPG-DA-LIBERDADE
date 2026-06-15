@@ -6,6 +6,7 @@ const LOCAL_ASSETS = [
   './index.html',
   './css/main.css',
   './js/data.js',
+  './js/firebase.js',
   './js/app.js',
   './manifest.json',
   './icons/icon.svg'

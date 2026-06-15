@@ -1,8 +1,15 @@
 /* ===== MAPA DA LIBERDADE — APP ===== */
 
-const STORAGE_KEY = 'rpg_liberdade_v2';
-const AUTH_KEY    = 'rpg_liberdade_auth';
-const AUTH_HASH   = '8af768d438a5f6325fae48892ba253b175f11fea057d15d19e3a266ce6126bc6';
+const STORAGE_KEY  = 'rpg_liberdade_v2';
+const AUTH_KEY     = 'rpg_liberdade_auth';
+const AUTH_HASH    = '8af768d438a5f6325fae48892ba253b175f11fea057d15d19e3a266ce6126bc6';
+const SYNC_ID_KEY  = 'mapa_sync_id';
+const DEVICE_KEY   = 'mapa_device_id';
+const DEVICE_ID    = (() => {
+  let id = localStorage.getItem(DEVICE_KEY);
+  if (!id) { id = Date.now().toString(36) + Math.random().toString(36).slice(2, 7); localStorage.setItem(DEVICE_KEY, id); }
+  return id;
+})();
 
 let S = {};
 let currentPage = 'home';
@@ -33,8 +40,61 @@ function loadState() {
 }
 
 function saveState() {
-  S.lastSaved = new Date().toISOString();
+  S.lastModified = new Date().toISOString();
+  S.lastSaved    = S.lastModified;
   localStorage.setItem(STORAGE_KEY, JSON.stringify(S));
+  saveToFirestore();
+}
+
+/* ============================
+   FIRESTORE SYNC
+   ============================ */
+
+function getSyncId() {
+  let id = localStorage.getItem(SYNC_ID_KEY);
+  if (!id) {
+    id = typeof crypto.randomUUID === 'function'
+      ? crypto.randomUUID()
+      : Date.now().toString(36) + '-' + Math.random().toString(36).slice(2);
+    localStorage.setItem(SYNC_ID_KEY, id);
+  }
+  return id;
+}
+
+let _firestoreUnsub = null;
+
+async function saveToFirestore() {
+  if (!window.firebaseReady) return;
+  try {
+    const ref = window.firebaseDoc(window.firebaseDb, 'sync', getSyncId());
+    await window.firebaseSetDoc(ref, {
+      state:        JSON.stringify(S),
+      lastModified: S.lastModified,
+      deviceId:     DEVICE_ID
+    });
+  } catch(e) { console.warn('Firestore write:', e.message); }
+}
+
+function startFirestoreSync() {
+  if (!window.firebaseReady) {
+    window.addEventListener('firebase-ready', startFirestoreSync, { once: true });
+    return;
+  }
+  if (_firestoreUnsub) _firestoreUnsub();
+  const ref = window.firebaseDoc(window.firebaseDb, 'sync', getSyncId());
+  _firestoreUnsub = window.firebaseOnSnapshot(ref, snap => {
+    if (!snap.exists()) return;
+    const remote = snap.data();
+    if (remote.deviceId === DEVICE_ID) return;
+    if (remote.lastModified <= (S.lastModified || '')) return;
+    try {
+      S = JSON.parse(remote.state);
+      S.lastSaved = new Date().toISOString();
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(S));
+      refreshCurrentPage();
+      toast('Mapa sincronizado', 'Dados atualizados automaticamente.');
+    } catch(e) { console.warn('Sync parse:', e); }
+  });
 }
 
 /* ============================
@@ -1189,52 +1249,47 @@ function savePhaseEdit(pid) {
    ============================ */
 
 function openSyncModal() {
-  const exportCode = btoa(unescape(encodeURIComponent(JSON.stringify(S))));
+  const syncId = getSyncId();
   showModal(`
-    <div class="modal-title">Sincronizar Dispositivos</div>
-    <p style="font-size:0.85rem;color:var(--tx-2);margin-bottom:var(--sp-5);line-height:1.6">
-      Para transferir seus dados entre celular e notebook, copie o codigo abaixo no dispositivo de origem
-      e cole no dispositivo de destino.
-    </p>
+    <div class="modal-title">Sincronização Automática</div>
 
-    <div class="form-group">
-      <label class="form-label">1. Copie este codigo (dispositivo atual)</label>
-      <textarea id="export-code" class="form-input" rows="4"
-        style="font-size:0.6rem;font-family:monospace;resize:none;word-break:break-all"
-        readonly>${exportCode}</textarea>
-      <button class="btn btn-outline" style="margin-top:var(--sp-2);width:100%"
-        onclick="navigator.clipboard.writeText(document.getElementById('export-code').value).then(()=>toast('Copiado','Cole no outro dispositivo.'))">
-        Copiar codigo
-      </button>
+    <div style="background:rgba(42,22,8,0.07);border:1px solid rgba(42,22,8,0.12);border-radius:10px;padding:var(--sp-4);margin-bottom:var(--sp-5)">
+      <div style="font-family:var(--f-title);font-size:0.6rem;color:var(--tx-gold);letter-spacing:0.14em;text-transform:uppercase;margin-bottom:var(--sp-2)">ID deste dispositivo</div>
+      <div style="display:flex;gap:var(--sp-2);align-items:center;flex-wrap:wrap">
+        <code style="flex:1;font-size:0.64rem;color:var(--tx-1);background:rgba(0,0,0,0.12);padding:8px 10px;border-radius:6px;word-break:break-all;font-family:monospace;min-width:0">${syncId}</code>
+        <button class="btn-sm" onclick="navigator.clipboard.writeText('${syncId}').then(()=>toast('Copiado','Cole no novo dispositivo.'))">Copiar</button>
+      </div>
+      <div style="font-size:0.7rem;color:var(--tx-dim);margin-top:var(--sp-2);opacity:0.7">
+        Copie este ID e cole no campo abaixo no outro dispositivo (iPhone ou notebook) para conectá-los.
+      </div>
     </div>
 
-    <div class="form-group" style="margin-top:var(--sp-5)">
-      <label class="form-label">2. Cole o codigo no dispositivo de destino</label>
-      <textarea id="import-code" class="form-input" rows="4"
-        placeholder="Cole aqui o codigo do outro dispositivo..."
-        style="font-size:0.6rem;font-family:monospace;resize:none;word-break:break-all"></textarea>
+    <div class="form-group">
+      <label class="form-label">Conectar a outro dispositivo — cole o ID do dispositivo principal:</label>
+      <div style="display:flex;gap:var(--sp-2);flex-wrap:wrap">
+        <input type="text" id="new-sync-id" class="form-input"
+          placeholder="Cole o ID aqui..."
+          style="flex:1;font-family:monospace;font-size:0.68rem;min-width:0">
+        <button class="btn-sm" onclick="applySyncId()">Conectar</button>
+      </div>
+      <div style="font-size:0.7rem;color:var(--tx-dim);margin-top:var(--sp-2);opacity:0.7">
+        Após conectar, todos os dispositivos ficam sincronizados automaticamente.
+      </div>
     </div>
 
     <div class="modal-actions">
       <button class="btn btn-outline" onclick="closeModal()">Fechar</button>
-      <button class="btn btn-gold" onclick="importData()">Importar dados</button>
     </div>`);
 }
 
-function importData() {
-  const raw = document.getElementById('import-code')?.value?.trim();
-  if (!raw) { toast('Codigo vazio', 'Cole o codigo antes de importar.'); return; }
-  try {
-    const parsed = JSON.parse(decodeURIComponent(escape(atob(raw))));
-    if (!parsed.phases || !parsed.missions) throw new Error('invalido');
-    S = parsed;
-    saveState();
-    closeModal();
-    toast('Dados importados!', 'Tudo sincronizado com sucesso.');
-    refreshCurrentPage();
-  } catch {
-    toast('Erro', 'Codigo invalido. Copie novamente do outro dispositivo.');
-  }
+function applySyncId() {
+  const newId = document.getElementById('new-sync-id')?.value?.trim();
+  if (!newId || newId.length < 8) { toast('ID inválido', 'Cole o ID completo do dispositivo principal.'); return; }
+  localStorage.setItem(SYNC_ID_KEY, newId);
+  closeModal();
+  if (_firestoreUnsub) _firestoreUnsub();
+  startFirestoreSync();
+  toast('Dispositivo conectado!', 'Sincronizando dados automaticamente...');
 }
 
 function openFinanceEdit(id) {
@@ -1425,4 +1480,5 @@ function initApp() {
   const activePhase = GAME_DATA.phases.find(p => S.phases[p.id]?.status === 'active');
   if (activePhase) activeMissionPhase = activePhase.id;
   go('home');
+  startFirestoreSync();
 }
