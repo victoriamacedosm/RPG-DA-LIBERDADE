@@ -1,7 +1,7 @@
 {
-  "name": "RPG DA LIBERDADE",
-  "short_name": "RPG",
-  "description": "Construindo uma vida com mais escolhas, autonomia e liberdade.",
+  "name": "Mapa da Liberdade",
+  "short_name": "Mapa",
+  "description": "Cada território conquistado é um passo rumo à liberdade total.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

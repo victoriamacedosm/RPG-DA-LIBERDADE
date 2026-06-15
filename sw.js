@@ -1,6 +1,6 @@
-/* ===== SERVICE WORKER — RPG DA LIBERDADE ===== */
+/* ===== SERVICE WORKER — MAPA DA LIBERDADE ===== */
 
-const CACHE = 'rpg-liberdade-v1';
+const CACHE = 'mapa-liberdade-v1';
 const LOCAL_ASSETS = [
   './',
   './index.html',

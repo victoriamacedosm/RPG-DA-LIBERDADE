@@ -1,4 +1,4 @@
-/* ===== RPG DA LIBERDADE — APP ===== */
+/* ===== MAPA DA LIBERDADE — APP ===== */
 
 const STORAGE_KEY = 'rpg_liberdade_v2';
 const AUTH_KEY    = 'rpg_liberdade_auth';
@@ -103,7 +103,7 @@ function addXP(amt) {
   const after = getLevelInfo(getXP());
   saveState();
   if (after.level > before.level) {
-    setTimeout(() => toast('Subiu de Nivel!', `Nivel ${after.level} — ${after.name} desbloqueado.`), 400);
+    setTimeout(() => toast('Novo Patamar!', `Nível ${after.level} — ${after.name} desbloqueado.`), 400);
   }
 }
 
@@ -121,7 +121,7 @@ function completeMission(id) {
     }
   }
   saveState();
-  toast('Missao Concluida', 'XP ganho. Continue avancando.');
+  toast('Expedição Concluída!', 'XP ganho. Continue explorando.');
   refreshCurrentPage();
 }
 
@@ -140,7 +140,7 @@ function completePhase(pid) {
   const achievMap = { 0:'fase_0_completa', 1:'fase_1_completa', 2:'fase_2_completa' };
   if (achievMap[pid]) unlockAchievement(achievMap[pid]);
   saveState();
-  toast('Fase Concluida!', GAME_DATA.motivational.completed[0]);
+  toast('Território Conquistado!', GAME_DATA.motivational.completed[0]);
   refreshCurrentPage();
 }
 
@@ -149,7 +149,7 @@ function unlockAchievement(id) {
   S.achievements[id] = { unlocked: true, unlockedDate: new Date().toISOString().split('T')[0] };
   saveState();
   const a = GAME_DATA.achievements.find(x => x.id === id);
-  if (a) toast('Conquista Desbloqueada', a.name);
+  if (a) toast('Nova Descoberta!', a.name);
 }
 
 function setActiveMission(id, slot) {
@@ -159,7 +159,7 @@ function setActiveMission(id, slot) {
     S.activeMission.secondary = S.activeMission.secondary === id ? null : id;
   }
   saveState();
-  toast(slot === 'main' ? 'Missao Principal definida' : 'Missao Secundaria definida', 'Visivel na Central.');
+  toast(slot === 'main' ? 'Expedição Principal definida' : 'Trilha Secundária definida', 'Visível na Base.');
   refreshCurrentPage();
 }
 
@@ -219,11 +219,11 @@ function refreshCurrentPage() { go(currentPage); }
 function renderNav() {
   document.getElementById('main-nav').innerHTML = `
     <div class="nav-logo" onclick="go('home')">
-      <div class="nav-emblem">${svgSword()}</div>
-      <span class="nav-title">RPG DA LIBERDADE</span>
+      <div class="nav-emblem">${svgCompass()}</div>
+      <span class="nav-title">MAPA DA LIBERDADE</span>
     </div>
     <ul class="nav-links">
-      ${[['home','Central'],['mapa','Mapa'],['missoes','Missoes'],['habilidades','Habilidades'],['financas','Financas'],['conquistas','Conquistas']]
+      ${[['home','Base'],['mapa','Mapa'],['missoes','Expedicoes'],['habilidades','Arsenal'],['financas','Tesouro'],['conquistas','Descobertas']]
         .map(([p,l]) => `<li><a class="nav-link${currentPage===p?' active':''}" data-page="${p}" onclick="go('${p}')">${l}</a></li>`).join('')}
       <li><button class="nav-link nav-logout" onclick="openSyncModal()">Sincronizar</button></li>
       <li><button class="nav-link nav-logout" onclick="doLogout()">Sair</button></li>
@@ -234,11 +234,15 @@ function renderNav() {
    SVG ICONS
    ============================ */
 
-function svgSword() {
+function svgCompass() {
   return `<svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-    <path d="M3 19L11 11M11 11L19 3M11 11L8 14M11 11L14 8" stroke="#c4a03a" stroke-width="1.8" stroke-linecap="round"/>
-    <path d="M16 6L18 4" stroke="#c4a03a" stroke-width="2.5" stroke-linecap="round"/>
-    <circle cx="4.5" cy="17.5" r="1.5" fill="#c4a03a"/>
+    <circle cx="11" cy="11" r="9" stroke="#c4a03a" stroke-width="1.4"/>
+    <circle cx="11" cy="11" r="1.8" fill="#c4a03a"/>
+    <path d="M11 3.5L12.4 9L11 11L9.6 9Z" fill="#c4a03a"/>
+    <path d="M11 18.5L9.6 13L11 11L12.4 13Z" fill="#c4a03a" opacity="0.45"/>
+    <path d="M3.5 11L9 9.6L11 11L9 12.4Z" fill="#c4a03a" opacity="0.45"/>
+    <path d="M18.5 11L13 12.4L11 11L13 9.6Z" fill="#c4a03a"/>
+    <text x="11" y="7.2" text-anchor="middle" font-family="serif" font-size="3.5" fill="#c4a03a" font-weight="700">N</text>
   </svg>`;
 }
 
@@ -289,8 +293,8 @@ function renderHome(el) {
 
   el.innerHTML = `
     <div class="page-header">
-      <h1 class="page-title">RPG DA LIBERDADE</h1>
-      <p class="page-subtitle">Construindo uma vida com mais escolhas, autonomia e liberdade.</p>
+      <h1 class="page-title">MAPA DA LIBERDADE</h1>
+      <p class="page-subtitle">Cada território conquistado é um passo rumo à liberdade total.</p>
     </div>
 
     <!-- HERO -->
@@ -305,13 +309,13 @@ function renderHome(el) {
         </div>
 
         <div>
-          <div class="hero-class-label">Classe &mdash; Exploradora Digital</div>
+          <div class="hero-class-label">Exploradora Digital</div>
           <div class="hero-name">Victoria</div>
-          <div class="hero-mission">${mainId ? `Missao principal: ${getMissionById(mainId)?.mission.title || ''}` : 'Nenhuma missao principal definida'}</div>
+          <div class="hero-mission">${mainId ? `Expedição: ${getMissionById(mainId)?.mission.title || ''}` : 'Nenhuma expedição definida'}</div>
         </div>
 
         <div style="min-width:240px">
-          <div class="pb-label"><span>XP &mdash; Proximo Nivel</span><span>${getXP().toLocaleString('pt-BR')} / ${lvl.nextXp.toLocaleString('pt-BR')}</span></div>
+          <div class="pb-label"><span>XP &mdash; Próxima Descoberta</span><span>${getXP().toLocaleString('pt-BR')} / ${lvl.nextXp.toLocaleString('pt-BR')}</span></div>
           <div class="pb-track"><div class="pb-fill xp" data-w="${lvl.pct}" style="width:0%"></div></div>
           <div style="font-family:var(--f-title);font-size:0.62rem;color:var(--tx-dim);text-align:right;margin-top:3px">
             ${lvl.xpToNext > 0 ? `Faltam ${lvl.xpToNext.toLocaleString('pt-BR')} XP para ${lvl.nextName}` : 'Nivel maximo'}
@@ -325,8 +329,8 @@ function renderHome(el) {
       <div class="mq-header">
         <div class="mq-icon">${svgMapIcon()}</div>
         <div>
-          <div class="mq-label">Missao da Jornada</div>
-          <div class="mq-name">Independencia Financeira e Liberdade de Escolha</div>
+          <div class="mq-label">Destino Final</div>
+          <div class="mq-name">Independência Financeira e Liberdade de Escolha</div>
         </div>
         <div class="mq-pct-label">${overall.pct}%</div>
       </div>
@@ -339,15 +343,15 @@ function renderHome(el) {
     <!-- STATS -->
     <div class="g-4" style="margin-bottom:var(--sp-5)">
       <div class="stat-chip card-dk"><div class="stat-val">${lvl.level}</div><div class="stat-lbl">Nivel Atual</div></div>
-      <div class="stat-chip card-dk"><div class="stat-val">${overall.pct}%</div><div class="stat-lbl">Jornada Total</div></div>
-      <div class="stat-chip card-dk"><div class="stat-val">${unlockedAch.length}</div><div class="stat-lbl">Conquistas</div></div>
-      <div class="stat-chip card-dk"><div class="stat-val">${daysSinceStart ?? 0}</div><div class="stat-lbl">Dias em Jornada</div></div>
+      <div class="stat-chip card-dk"><div class="stat-val">${overall.pct}%</div><div class="stat-lbl">Mapa Explorado</div></div>
+      <div class="stat-chip card-dk"><div class="stat-val">${unlockedAch.length}</div><div class="stat-lbl">Descobertas</div></div>
+      <div class="stat-chip card-dk"><div class="stat-val">${daysSinceStart ?? 0}</div><div class="stat-lbl">Dias Explorando</div></div>
     </div>
 
     <!-- ACTIVE MISSIONS -->
     <div class="divider">
       <div class="divider-line"></div>
-      <span class="divider-title">Missoes Ativas</span>
+      <span class="divider-title">Expedições Ativas</span>
       <div class="divider-line"></div>
     </div>
 
@@ -362,7 +366,7 @@ function renderHome(el) {
     <!-- FASE ATUAL -->
     <div class="divider">
       <div class="divider-line"></div>
-      <span class="divider-title">Fases da Jornada</span>
+      <span class="divider-title">Territórios do Mapa</span>
       <div class="divider-line"></div>
     </div>
     <div class="g-4">
@@ -370,7 +374,7 @@ function renderHome(el) {
     </div>
 
     ${unlockedAch.length > 0 ? `
-    <div class="divider"><div class="divider-line"></div><span class="divider-title">Conquistas Recentes</span><div class="divider-line"></div></div>
+    <div class="divider"><div class="divider-line"></div><span class="divider-title">Descobertas Recentes</span><div class="divider-line"></div></div>
     <div class="ach-grid">
       ${unlockedAch.slice(-6).map(a => renderAchBadge(a, true)).join('')}
     </div>` : ''}
@@ -379,7 +383,7 @@ function renderHome(el) {
 }
 
 function renderActiveMissionCard(id, slot) {
-  const label = slot === 'main' ? 'Missao Principal' : 'Missao Secundaria';
+  const label = slot === 'main' ? 'Expedição Principal' : 'Trilha Secundária';
   const tagClass = slot === 'main' ? 'tag-main' : 'tag-secondary';
   const cardClass = slot === 'main' ? 'main-mission' : 'secondary-mission';
 
@@ -387,9 +391,9 @@ function renderActiveMissionCard(id, slot) {
     return `<div class="active-mission ${cardClass}">
       <span class="mission-type-tag ${tagClass}">${label}</span>
       <div class="am-no-mission">
-        <div class="no-mission-label">Nenhuma missao definida</div>
-        <div class="no-mission-sub">Va ate Missoes para escolher sua missao ${slot === 'main' ? 'principal' : 'secundaria'}.</div>
-        <div style="margin-top:var(--sp-4)"><button class="btn-sm" onclick="go('missoes')">Escolher missao &rarr;</button></div>
+        <div class="no-mission-label">Nenhuma expedição definida</div>
+        <div class="no-mission-sub">Vá até Expedições para escolher sua ${slot === 'main' ? 'expedição principal' : 'trilha secundária'}.</div>
+        <div style="margin-top:var(--sp-4)"><button class="btn-sm" onclick="go('missoes')">Escolher expedição &rarr;</button></div>
       </div>
     </div>`;
   }
@@ -402,7 +406,7 @@ function renderActiveMissionCard(id, slot) {
 
   return `<div class="active-mission ${cardClass}${done?' m-done':''}">
     <span class="mission-type-tag ${tagClass}">${label}</span>
-    <div class="am-phase">Fase ${phase.id} &mdash; ${phase.name}</div>
+    <div class="am-phase">Território ${phase.id} &mdash; ${phase.name}</div>
     <div class="am-title">${mission.title}</div>
     <div class="am-desc">${mission.desc}</div>
     <div class="pb-wrap">
@@ -411,10 +415,10 @@ function renderActiveMissionCard(id, slot) {
     </div>
     <div style="display:flex;gap:var(--sp-3);margin-top:var(--sp-4);flex-wrap:wrap">
       <button class="btn-sm" onclick="${done?`uncompleteM('${id}')`:`completeMission('${id}')`}">
-        ${done ? 'Desmarcar' : 'Concluir missao'}
+        ${done ? 'Desmarcar' : 'Concluir expedição'}
       </button>
-      <button class="btn-sm" onclick="go('missoes')">Ver missoes &rarr;</button>
-      <button class="btn-sm" onclick="setActiveMission('${id}','${slot}')">Trocar missao</button>
+      <button class="btn-sm" onclick="go('missoes')">Ver expedições &rarr;</button>
+      <button class="btn-sm" onclick="setActiveMission('${id}','${slot}')">Trocar expedição</button>
     </div>
   </div>`;
 }
@@ -424,11 +428,11 @@ function renderPhaseCard(phase) {
   const pct = getPhaseProgress(phase.id);
   const completedMissions = phase.missions.filter(m => S.missions[m.id]?.completed).length;
 
-  const statusText = { completed: 'Concluida', active: 'Ativa', available: `${completedMissions}/${phase.missions.length}` }[st] || '';
+  const statusText = { completed: 'Conquistado', active: 'Em exploração', available: `${completedMissions}/${phase.missions.length}` }[st] || '';
 
   return `<div class="phase-card st-${st}" onclick="go('missoes');activeMissionPhase=${phase.id};activeMissionTab='phases';renderMissoes()">
     <div class="phase-status-icon">${st === 'completed' ? '&#10003;' : st === 'active' ? '&#9670;' : ''}</div>
-    <div class="phase-num">Fase ${phase.id}</div>
+    <div class="phase-num">Território ${phase.id}</div>
     <div class="phase-name">${phase.name}</div>
     <div class="phase-desc">${phase.description}</div>
     <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:var(--sp-2)">
@@ -446,8 +450,8 @@ function renderPhaseCard(phase) {
 function renderMapa(el) {
   el.innerHTML = `
     <div class="page-header">
-      <h1 class="page-title">Mapa da Jornada</h1>
-      <p class="page-subtitle">Cada fase e uma regiao do seu mundo. Clique em um local para ver detalhes.</p>
+      <h1 class="page-title">Mapa dos Territórios</h1>
+      <p class="page-subtitle">Seu mundo em forma de mapa. Cada território é uma conquista. Clique para explorar.</p>
     </div>
     <div class="map-page-wrap">
       <div class="map-svg-container" id="map-svg-wrap"></div>
@@ -463,11 +467,11 @@ function renderMapa(el) {
 function renderMapLegend() {
   return `<div class="map-legend card-dk">
     <div class="card-dk-title" style="margin-bottom:var(--sp-4)">Legenda</div>
-    <div class="legend-item"><div class="legend-dot" style="background:var(--ok-bright)"></div> Fase concluida</div>
-    <div class="legend-item"><div class="legend-dot" style="background:var(--gold-warm)"></div> Fase atual / ativa</div>
-    <div class="legend-item"><div class="legend-dot" style="background:var(--tx-dim)"></div> Fase futura</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--ok-bright)"></div> Conquistado</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--gold-warm)"></div> Em exploração</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--tx-dim)"></div> Inexplorado</div>
     <div style="margin-top:var(--sp-4);padding-top:var(--sp-4);border-top:1px solid rgba(172,138,40,0.1)">
-      <div style="font-family:var(--f-title);font-size:0.65rem;color:var(--tx-gold);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:var(--sp-3)">Progresso total</div>
+      <div style="font-family:var(--f-title);font-size:0.65rem;color:var(--tx-gold);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:var(--sp-3)">Mapa explorado</div>
       ${(() => { const p = getOverallProgress(); return `<div class="pb-label"><span></span><span>${p.pct}%</span></div><div class="pb-track"><div class="pb-fill main" data-w="${p.pct}" style="width:0%"></div></div>`; })()}
     </div>
   </div>`;
@@ -475,7 +479,7 @@ function renderMapLegend() {
 
 function renderMapPhaseList() {
   return `<div class="card-dk" style="margin-top:var(--sp-4)">
-    <div class="card-dk-title">Regioes</div>
+    <div class="card-dk-title">Territórios</div>
     ${GAME_DATA.phases.map(p => {
       const st = S.phases[p.id]?.status || 'available';
       const pct = getPhaseProgress(p.id);
@@ -484,7 +488,7 @@ function renderMapPhaseList() {
           <div style="width:8px;height:8px;border-radius:50%;background:${st==='completed'?'var(--ok-bright)':st==='active'?'var(--gold-warm)':'var(--tx-dim)'};flex-shrink:0"></div>
           <div>
             <div style="font-family:var(--f-title);font-size:0.75rem;font-weight:700;color:${st==='completed'?'var(--ok-bright)':st==='active'?'var(--tx-gold)':'var(--tx-dim)'}">${p.location}</div>
-            <div style="font-size:0.72rem;color:var(--tx-dim);margin-top:1px">Fase ${p.id} &mdash; ${pct}% concluido</div>
+            <div style="font-size:0.72rem;color:var(--tx-dim);margin-top:1px">Território ${p.id} &mdash; ${pct}% explorado</div>
           </div>
         </div>
       </div>`;
@@ -574,7 +578,7 @@ function buildMapSVG(wrap) {
     ${compassRose(W-68, 68)}
 
     <!-- Map title -->
-    <text x="${W/2}" y="68" text-anchor="middle" font-family="Cinzel, Georgia, serif" font-size="22" font-weight="700" fill="#5a3a10" opacity="0.7" letter-spacing="4">MAPA DA JORNADA</text>
+    <text x="${W/2}" y="68" text-anchor="middle" font-family="Cinzel, Georgia, serif" font-size="22" font-weight="700" fill="#5a3a10" opacity="0.7" letter-spacing="4">MAPA DA LIBERDADE</text>
     <line x1="${W/2-100}" y1="80" x2="${W/2+100}" y2="80" stroke="#9a7828" stroke-width="1" opacity="0.4"/>
 
     <!-- PATH LAYER -->
@@ -675,7 +679,7 @@ function renderMapLocation(loc) {
 
     <!-- Progress text -->
     ${st !== 'available' ? `<text x="${textX}" y="${loc.y + (nameLines.length*20) + 2}" text-anchor="${textAnchor}"
-      font-family="Cinzel, Georgia, serif" font-size="11" fill="${c.ring}" opacity="0.8">${pct}% concluido</text>` : ''}
+      font-family="Cinzel, Georgia, serif" font-size="11" fill="${c.ring}" opacity="0.8">${pct}% explorado</text>` : ''}
 
     <!-- Invisible click target -->
     <rect x="${Math.min(loc.x-r-6, textX-120)}" y="${loc.y-r-6}" width="200" height="${r*2+12+40}" fill="transparent"/>
@@ -784,8 +788,8 @@ function renderMissoes(el) {
   const container = el || document.getElementById(`page-${currentPage}`);
   container.innerHTML = `
     <div class="page-header">
-      <h1 class="page-title">Missoes</h1>
-      <p class="page-subtitle">Defina sua missao principal e secundaria. O restante fica em espera.</p>
+      <h1 class="page-title">Expedições</h1>
+      <p class="page-subtitle">Defina sua expedição principal e trilha secundária. O restante aguarda no horizonte.</p>
     </div>
 
     <div class="phase-tabs">
@@ -794,12 +798,12 @@ function renderMissoes(el) {
         const isActive = activeMissionTab === 'phases' && activeMissionPhase === p.id;
         return `<button class="phase-tab${isActive?' active':''} ${st==='completed'?'is-done':''}"
           onclick="activeMissionTab='phases';activeMissionPhase=${p.id};renderMissoes()">
-          Fase ${p.id} &mdash; ${p.name}
+          Território ${p.id} &mdash; ${p.name}
         </button>`;
       }).join('')}
       <button class="phase-tab${activeMissionTab==='frozen'?' active':''} is-frozen"
         onclick="activeMissionTab='frozen';renderMissoes()">
-        Missoes Congeladas
+        Sonhos no Horizonte
       </button>
     </div>
 
@@ -822,7 +826,7 @@ function renderPhaseMissions() {
       <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--sp-4);flex-wrap:wrap">
         <div>
           <div style="font-family:var(--f-title);font-size:0.65rem;color:var(--tx-gold);letter-spacing:0.2em;text-transform:uppercase;opacity:0.7;margin-bottom:3px">
-            Fase ${phase.id} &mdash; ${phState.status === 'completed' ? 'Concluida' : 'Em andamento'}
+            Território ${phase.id} &mdash; ${phState.status === 'completed' ? 'Conquistado' : 'Em exploração'}
           </div>
           <div style="font-family:var(--f-title);font-size:1.2rem;font-weight:700;color:var(--tx-primary)">${phase.name}</div>
           <div style="font-size:0.85rem;color:var(--tx-secondary);margin-top:var(--sp-1);opacity:0.8">${phase.description}</div>
@@ -838,24 +842,24 @@ function renderPhaseMissions() {
       <div style="display:flex;gap:var(--sp-5);flex-wrap:wrap;font-family:var(--f-title);font-size:0.65rem;color:var(--tx-dim);margin-bottom:var(--sp-4)">
         ${phState.startDate ? `<span>Inicio: ${fmtDate(phState.startDate)}</span>` : ''}
         ${phState.targetDate ? `<span style="color:${dLeft!==null&&dLeft<=14?'var(--warn)':'var(--tx-dim)'}">Prazo: ${fmtDate(phState.targetDate)}${dLeft!==null?` (${dLeft>=0?dLeft+' dias':'ATRASADA'})`:''}</span>` : ''}
-        ${phState.completionDate ? `<span style="color:var(--ok-bright)">Concluida: ${fmtDate(phState.completionDate)}</span>` : ''}
+        ${phState.completionDate ? `<span style="color:var(--ok-bright)">Conquistado: ${fmtDate(phState.completionDate)}</span>` : ''}
       </div>
       <button class="btn-sm" onclick="openPhaseEdit(${phase.id})">Editar datas &rarr;</button>
     </div>
 
-    <div class="divider"><div class="divider-line"></div><span class="divider-title">Missao Principal</span><div class="divider-line"></div></div>
+    <div class="divider"><div class="divider-line"></div><span class="divider-title">Expedição Principal</span><div class="divider-line"></div></div>
     <div style="margin-bottom:var(--sp-6)">
       ${mainMissions.map(m => renderMissionCard(m, phase)).join('')}
     </div>
 
-    <div class="divider"><div class="divider-line"></div><span class="divider-title">Missoes Secundarias</span><div class="divider-line"></div></div>
+    <div class="divider"><div class="divider-line"></div><span class="divider-title">Trilhas Secundárias</span><div class="divider-line"></div></div>
     <div>
       ${secMissions.map(m => renderMissionCard(m, phase)).join('')}
     </div>
 
     ${pct === 100 && phState.status !== 'completed' ? `
     <div style="margin-top:var(--sp-6);text-align:center">
-      <button class="btn btn-ok" onclick="completePhase(${phase.id})">Concluir Fase ${phase.id} &rarr;</button>
+      <button class="btn btn-ok" onclick="completePhase(${phase.id})">Conquistar Território ${phase.id} &rarr;</button>
     </div>` : ''}
   `;
 }
@@ -868,22 +872,22 @@ function renderMissionCard(m, phase) {
   return `<div class="mission-card m-${m.type}${done?' m-done':''}">
     <div class="m-inner">
       <div style="flex:1">
-        <span class="mission-type-tag tag-${done?'ok':m.type}">${done ? '&#10003; Concluida' : m.type === 'main' ? 'Principal' : 'Secundaria'}</span>
+        <span class="mission-type-tag tag-${done?'ok':m.type}">${done ? '&#10003; Concluída' : m.type === 'main' ? 'Expedição' : 'Trilha'}</span>
         <div class="m-title">${m.title}</div>
         <div class="m-desc">${m.desc}</div>
-        ${done && S.missions[m.id]?.completedDate ? `<div class="m-date">Concluida em ${fmtDate(S.missions[m.id].completedDate)}</div>` : ''}
+        ${done && S.missions[m.id]?.completedDate ? `<div class="m-date">Conquistado em ${fmtDate(S.missions[m.id].completedDate)}</div>` : ''}
         ${!done ? `<div style="display:flex;gap:var(--sp-2);flex-wrap:wrap;margin-top:var(--sp-3)">
           <button class="btn-set-active${isMainActive?' is-active-m':''}" onclick="setActiveMission('${m.id}','main')">
-            ${isMainActive ? '&#10003; Missao Principal' : 'Definir como Principal'}
+            ${isMainActive ? '&#10003; Expedição Principal' : 'Expedição Principal'}
           </button>
           <button class="btn-set-active${isSecActive?' is-active-s':''}" onclick="setActiveMission('${m.id}','secondary')">
-            ${isSecActive ? '&#10003; Missao Secundaria' : 'Definir como Secundaria'}
+            ${isSecActive ? '&#10003; Trilha Secundária' : 'Trilha Secundária'}
           </button>
         </div>` : ''}
       </div>
       <button class="m-check${done?' is-checked':''}"
         onclick="${done?`uncompleteM('${m.id}')`:`completeMission('${m.id}')`}"
-        title="${done?'Desmarcar':'Marcar como concluida'}">
+        title="${done?'Desmarcar':'Marcar como conquistada'}">
         ${done ? svgCheck() : ''}
       </button>
     </div>
@@ -893,11 +897,11 @@ function renderMissionCard(m, phase) {
 function renderFrozenMissions() {
   return `
     <div class="card-dk" style="margin-bottom:var(--sp-5)">
-      <div class="card-dk-title">Missoes Congeladas</div>
+      <div class="card-dk-title">Sonhos no Horizonte</div>
       <p style="font-size:0.88rem;color:var(--tx-secondary);line-height:1.6;opacity:0.8">
-        Esses objetivos nao sao prioridade agora &mdash; mas continuam visiveis.
-        Voce pode avancar neles quando quiser, antes mesmo da fase correspondente chegar.
-        O progresso e salvo automaticamente.
+        Esses territórios ainda aguardam sua conquista — mas estão sempre visíveis no mapa.
+        Você pode avançar neles quando quiser, antes mesmo de chegar na fase correspondente.
+        O progresso é salvo automaticamente.
       </p>
     </div>
     <div>
@@ -945,17 +949,17 @@ function renderHabilidades(el) {
 
   el.innerHTML = `
     <div class="page-header">
-      <h1 class="page-title">Arvore de Habilidades</h1>
-      <p class="page-subtitle">Clique nos pontos para atualizar seu nivel em cada habilidade.</p>
+      <h1 class="page-title">Arsenal da Exploradora</h1>
+      <p class="page-subtitle">Clique nos pontos para atualizar seu nível em cada ferramenta.</p>
     </div>
 
     <div class="card-dk" style="margin-bottom:var(--sp-6);text-align:center;padding:var(--sp-6)">
-      <div class="card-dk-title">Dominio Geral &mdash; Marketing Digital</div>
+      <div class="card-dk-title">Domínio da Exploradora &mdash; Marketing Digital</div>
       <div style="font-family:var(--f-title);font-size:2.5rem;font-weight:900;color:var(--gold-warm);margin:var(--sp-3) 0">${pct}%</div>
       <div class="pb-track" style="height:14px;max-width:480px;margin:0 auto var(--sp-3)">
         <div class="pb-fill" data-w="${pct}" style="width:0%"></div>
       </div>
-      <div style="font-family:var(--f-title);font-size:0.65rem;color:var(--tx-dim)">${totalPts} / ${maxPts} pontos de habilidade</div>
+      <div style="font-family:var(--f-title);font-size:0.65rem;color:var(--tx-dim)">${totalPts} / ${maxPts} ferramentas dominadas</div>
     </div>
 
     <div style="text-align:center;margin-bottom:var(--sp-6)">
@@ -979,7 +983,7 @@ function renderBranch(branch) {
     <div class="branch-hd">
       <div>
         <div class="branch-hd-name">${branch.name}</div>
-        <div class="branch-hd-sub">${pts}/${max} pontos &mdash; ${pct}%</div>
+        <div class="branch-hd-sub">${pts}/${max} ferramentas &mdash; ${pct}%</div>
       </div>
     </div>
     <div class="pb-track" style="height:5px;margin-bottom:var(--sp-4)">
@@ -1014,16 +1018,16 @@ function renderFinancas(el) {
 
   el.innerHTML = `
     <div class="page-header">
-      <h1 class="page-title">Financas</h1>
-      <p class="page-subtitle">Cada caixa e independente. Clareza financeira e o primeiro passo para a liberdade.</p>
+      <h1 class="page-title">Tesouro</h1>
+      <p class="page-subtitle">Cada baú é independente. Clareza financeira é o mapa para a liberdade.</p>
     </div>
 
     <div class="mq-card" style="margin-bottom:var(--sp-6)">
       <div class="mq-header">
         <div class="mq-icon">${svgFinanceIcon()}</div>
         <div>
-          <div class="mq-label">Meta Principal</div>
-          <div class="mq-name">Renda Mensal Propria</div>
+          <div class="mq-label">Missão do Tesouro</div>
+          <div class="mq-name">Renda Mensal Própria</div>
         </div>
         <div style="text-align:right">
           <div style="font-family:var(--f-title);font-size:1.6rem;font-weight:900;color:var(--pg-lightest)">
@@ -1041,7 +1045,7 @@ function renderFinancas(el) {
       </div>
     </div>
 
-    <div class="divider"><div class="divider-line"></div><span class="divider-title">Caixas Financeiros</span><div class="divider-line"></div></div>
+    <div class="divider"><div class="divider-line"></div><span class="divider-title">Baús do Tesouro</span><div class="divider-line"></div></div>
     <div class="g-3" style="margin-bottom:var(--sp-6)">
       ${GAME_DATA.finances.filter(f => f.id !== 'renda_mensal').map(f => renderFinanceCard(f)).join('')}
     </div>
@@ -1077,8 +1081,8 @@ function renderFinanceSummary() {
   const reserva = S.finances['reserva']?.amount || 0;
   const invest = S.finances['investimentos']?.amount || 0;
   return [
-    ['Patrimonio Total', total],
-    ['Reserva Atual', reserva],
+    ['Tesouro Total', total],
+    ['Reserva de Emergência', reserva],
     ['Investimentos', invest],
   ].map(([label, val]) => `<div style="text-align:center;padding:var(--sp-4)">
     <div style="font-family:var(--f-title);font-size:0.62rem;color:var(--tx-gold);letter-spacing:0.15em;text-transform:uppercase;opacity:0.7;margin-bottom:var(--sp-2)">${label}</div>
@@ -1098,12 +1102,12 @@ function renderConquistas(el) {
 
   el.innerHTML = `
     <div class="page-header">
-      <h1 class="page-title">Conquistas</h1>
-      <p class="page-subtitle">Cada conquista e a prova de que voce estava aqui e foi alem.</p>
+      <h1 class="page-title">Descobertas</h1>
+      <p class="page-subtitle">Cada descoberta marca uma vitória no mapa da sua vida.</p>
     </div>
 
     <div class="card-dk" style="text-align:center;padding:var(--sp-7);margin-bottom:var(--sp-6)">
-      <div class="card-dk-title">Sala dos Trofeus</div>
+      <div class="card-dk-title">Sala das Descobertas</div>
       <div style="font-family:var(--f-title);font-size:2.8rem;font-weight:900;color:var(--gold-warm);margin:var(--sp-3) 0">${unlocked.length} <span style="font-size:1.2rem;opacity:0.4">/ ${total}</span></div>
       <div class="pb-track" style="max-width:360px;margin:0 auto;height:10px">
         <div class="pb-fill" data-w="${pct}" style="width:0%"></div>
@@ -1111,17 +1115,17 @@ function renderConquistas(el) {
     </div>
 
     ${unlocked.length > 0 ? `
-    <div class="divider"><div class="divider-line"></div><span class="divider-title">Desbloqueadas</span><div class="divider-line"></div></div>
+    <div class="divider"><div class="divider-line"></div><span class="divider-title">Descobertas</span><div class="divider-line"></div></div>
     <div class="ach-grid" style="margin-bottom:var(--sp-7)">
       ${unlocked.map(a => renderAchBadge(a, true)).join('')}
     </div>` : ''}
 
-    <div class="divider"><div class="divider-line"></div><span class="divider-title">Bloqueadas</span><div class="divider-line"></div></div>
+    <div class="divider"><div class="divider-line"></div><span class="divider-title">Aguardando Descoberta</span><div class="divider-line"></div></div>
     <div class="ach-grid" style="margin-bottom:var(--sp-6)">
       ${GAME_DATA.achievements.filter(a => !S.achievements[a.id]?.unlocked).map(a => renderAchBadge(a, false)).join('')}
     </div>
 
-    <div class="divider"><div class="divider-line"></div><span class="divider-title">Desbloquear Manualmente</span><div class="divider-line"></div></div>
+    <div class="divider"><div class="divider-line"></div><span class="divider-title">Registrar Descoberta</span><div class="divider-line"></div></div>
     <div style="display:flex;flex-wrap:wrap;gap:var(--sp-2)">
       ${GAME_DATA.achievements.filter(a => !S.achievements[a.id]?.unlocked).map(a =>
         `<button class="btn-sm" onclick="unlockAchievement('${a.id}');renderConquistas()">${a.name}</button>`
@@ -1176,7 +1180,7 @@ function savePhaseEdit(pid) {
   S.phases[pid].targetDate = t || null;
   if (d) S.phases[pid].completionDate = d;
   saveState(); closeModal();
-  toast('Fase atualizada', 'As datas foram salvas.');
+  toast('Território atualizado', 'As datas foram salvas.');
   refreshCurrentPage();
 }
 
@@ -1264,7 +1268,7 @@ function saveFinanceEdit(id) {
     document.getElementById('fi-notes')?.value
   );
   closeModal();
-  toast('Financas atualizadas', 'Valores salvos.');
+  toast('Tesouro atualizado', 'Valores salvos.');
   refreshCurrentPage();
 }
 
@@ -1344,25 +1348,26 @@ function showLoginScreen() {
         border-radius:14px;pointer-events:none"></div>
 
       <div style="width:74px;height:74px;margin:0 auto 1.5rem;border-radius:50%;
-        background:linear-gradient(135deg,#5a3c08,#c49420,#d8a830);
+        background:linear-gradient(135deg,#4a3010,#9a6820,#c49420);
         display:flex;align-items:center;justify-content:center;
-        box-shadow:0 0 28px rgba(196,148,32,0.5),0 4px 14px rgba(26,10,0,0.4);">
-        <svg width="32" height="42" viewBox="0 0 32 42" fill="none">
-          <polygon points="16,2 13,25 16,29 19,25" fill="#f0e8c8"/>
-          <line x1="16" y1="3" x2="16" y2="25" stroke="rgba(255,240,128,0.45)" stroke-width="2"/>
-          <rect x="5" y="25" width="22" height="5" rx="2.5" fill="#f0e8c8"/>
-          <rect x="14" y="30" width="4" height="8" rx="2" fill="#c4a060"/>
-          <ellipse cx="16" cy="40" rx="5" ry="3.5" fill="#f0e8c8"/>
-          <circle cx="16" cy="3.5" r="2" fill="rgba(255,248,160,0.9)"/>
+        box-shadow:0 4px 20px rgba(80,40,0,0.4),0 2px 8px rgba(26,10,0,0.35);">
+        <svg width="38" height="38" viewBox="0 0 38 38" fill="none">
+          <circle cx="19" cy="19" r="16" stroke="#f0e8c8" stroke-width="1.8"/>
+          <circle cx="19" cy="19" r="3" fill="#f0e8c8"/>
+          <path d="M19 5L21 14.5L19 19L17 14.5Z" fill="#f0e8c8"/>
+          <path d="M19 33L17 23.5L19 19L21 23.5Z" fill="#f0e8c8" opacity="0.5"/>
+          <path d="M5 19L14.5 17L19 19L14.5 21Z" fill="#f0e8c8" opacity="0.5"/>
+          <path d="M33 19L23.5 21L19 19L23.5 17Z" fill="#f0e8c8"/>
+          <text x="19" y="11.5" text-anchor="middle" font-family="serif" font-size="5.5" fill="#f0e8c8" font-weight="700">N</text>
         </svg>
       </div>
 
       <h1 style="font-family:'Cinzel','Georgia',serif;font-size:1.2rem;font-weight:900;
         color:#2a1608;letter-spacing:0.14em;margin-bottom:0.4rem;line-height:1.2">
-        RPG DA LIBERDADE
+        MAPA DA LIBERDADE
       </h1>
       <p style="font-size:0.8rem;color:#6a4020;font-style:italic;margin-bottom:1.8rem;opacity:0.75">
-        Sua jornada. Seu espaco.
+        Sua aventura. Seu mapa.
       </p>
 
       <div id="login-err" style="display:none;
@@ -1395,7 +1400,7 @@ function showLoginScreen() {
           font-size:0.76rem;font-weight:700;letter-spacing:0.14em;
           text-transform:uppercase;cursor:pointer;
           box-shadow:0 0 20px rgba(196,148,32,0.3)">
-        Entrar na Jornada
+        Iniciar Expedição
       </button>
     </div>`;
 
