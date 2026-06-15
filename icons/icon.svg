@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="42%" r="65%">
+      <stop offset="0%" stop-color="#6a3818"/>
+      <stop offset="100%" stop-color="#2a1808"/>
+    </radialGradient>
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="10" result="blur"/>
+      <feFlood flood-color="#d8a830" flood-opacity="0.45" result="col"/>
+      <feComposite in="col" in2="blur" operator="in" result="g"/>
+      <feMerge><feMergeNode in="g"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Fundo -->
+  <rect width="512" height="512" fill="#3a2412"/>
+  <rect width="512" height="512" fill="url(#bg)"/>
+
+  <!-- Anel decorativo externo -->
+  <circle cx="256" cy="256" r="220" fill="none" stroke="#c49420" stroke-width="4" opacity="0.3"/>
+  <!-- Anel interno -->
+  <circle cx="256" cy="256" r="200" fill="none" stroke="#c49420" stroke-width="1.5" opacity="0.15"/>
+
+  <!-- Ornamentos de canto -->
+  <g stroke="#c49420" stroke-width="3" fill="none" opacity="0.3">
+    <path d="M20,20 L54,20 M20,20 L20,54"/>
+    <path d="M492,20 L458,20 M492,20 L492,54"/>
+    <path d="M20,492 L54,492 M20,492 L20,458"/>
+    <path d="M492,492 L458,492 M492,492 L492,458"/>
+  </g>
+
+  <!-- Espada -->
+  <g filter="url(#glow)">
+    <!-- Lâmina -->
+    <polygon points="256,72 238,278 256,300 274,278" fill="#d8a830"/>
+    <!-- Linha central da lâmina -->
+    <line x1="256" y1="78" x2="256" y2="282" stroke="#f0e060" stroke-width="2.5" opacity="0.45"/>
+    <!-- Guarda (crossguard) -->
+    <rect x="186" y="282" width="140" height="24" rx="12" fill="#d8a830"/>
+    <!-- Cabo -->
+    <rect x="248" y="306" width="16" height="84" rx="8" fill="#7a5018"/>
+    <!-- Linhas de empunhadura -->
+    <line x1="248" y1="325" x2="264" y2="325" stroke="#d8a830" stroke-width="2" opacity="0.35"/>
+    <line x1="248" y1="343" x2="264" y2="343" stroke="#d8a830" stroke-width="2" opacity="0.35"/>
+    <line x1="248" y1="361" x2="264" y2="361" stroke="#d8a830" stroke-width="2" opacity="0.35"/>
+    <line x1="248" y1="379" x2="264" y2="379" stroke="#d8a830" stroke-width="2" opacity="0.35"/>
+    <!-- Pomo -->
+    <ellipse cx="256" cy="404" rx="24" ry="18" fill="#d8a830"/>
+  </g>
+
+  <!-- Brilho da ponta -->
+  <circle cx="256" cy="78" r="6" fill="#f8f0a0" opacity="0.9"/>
+  <!-- Gemas da guarda -->
+  <circle cx="190" cy="294" r="9" fill="#f0cc68" opacity="0.8"/>
+  <circle cx="322" cy="294" r="9" fill="#f0cc68" opacity="0.8"/>
+</svg>

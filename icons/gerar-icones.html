@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Gerar Ícones — RPG DA LIBERDADE</title>
+  <style>
+    body { font-family: Georgia, serif; background: #3a2412; color: #f0d8a8; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; gap: 1.5rem; padding: 2rem; }
+    h1 { font-size: 1.2rem; letter-spacing: 0.14em; color: #d8a830; }
+    p { font-size: 0.85rem; opacity: 0.7; text-align: center; max-width: 400px; }
+    button { background: linear-gradient(135deg, #8a6010, #d8a830); border: none; border-radius: 8px; color: #1e1208; font-family: Georgia, serif; font-size: 0.9rem; font-weight: 700; padding: 10px 24px; cursor: pointer; margin: 4px; }
+    canvas { border: 1px solid #d8a830; border-radius: 8px; }
+    .row { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; justify-content: center; }
+  </style>
+</head>
+<body>
+  <h1>GERADOR DE ÍCONES</h1>
+  <p>Clique em cada botão para baixar o arquivo PNG correspondente. Salve os arquivos na pasta <strong>icons/</strong> do projeto.</p>
+
+  <div class="row">
+    <div>
+      <canvas id="c192" width="192" height="192"></canvas>
+      <br><button onclick="download('c192','icon-192.png')">Baixar icon-192.png</button>
+    </div>
+    <div>
+      <canvas id="c512" width="512" height="512"></canvas>
+      <br><button onclick="download('c512','icon-512.png')">Baixar icon-512.png</button>
+    </div>
+    <div>
+      <canvas id="c180" width="180" height="180"></canvas>
+      <br><button onclick="download('c180','icon-180.png')">Baixar icon-180.png</button>
+    </div>
+  </div>
+
+  <script>
+    function drawIcon(canvas) {
+      const c = canvas.getContext('2d');
+      const S = canvas.width;
+      const cx = S / 2, cy = S / 2;
+      const sc = S / 512;
+
+      // Fundo
+      const bg = c.createRadialGradient(cx, cy * 0.84, 0, cx, cy, S * 0.65);
+      bg.addColorStop(0, '#6a3818');
+      bg.addColorStop(1, '#2a1808');
+      c.fillStyle = bg;
+      c.fillRect(0, 0, S, S);
+
+      // Anel externo
+      c.strokeStyle = 'rgba(196,148,32,0.3)';
+      c.lineWidth = 4 * sc;
+      c.beginPath();
+      c.arc(cx, cy, 220 * sc, 0, Math.PI * 2);
+      c.stroke();
+
+      c.strokeStyle = 'rgba(196,148,32,0.15)';
+      c.lineWidth = 1.5 * sc;
+      c.beginPath();
+      c.arc(cx, cy, 200 * sc, 0, Math.PI * 2);
+      c.stroke();
+
+      // Ornamentos de canto
+      c.strokeStyle = 'rgba(196,148,32,0.3)';
+      c.lineWidth = 3 * sc;
+      const oc = [[20,20,54,20,20,54],[492,20,458,20,492,54],[20,492,54,492,20,458],[492,492,458,492,492,458]];
+      oc.forEach(([x1,y1,x2,y2,x3,y3]) => {
+        c.beginPath(); c.moveTo(x1*sc,y1*sc); c.lineTo(x2*sc,y2*sc); c.stroke();
+        c.beginPath(); c.moveTo(x1*sc,y1*sc); c.lineTo(x3*sc,y3*sc); c.stroke();
+      });
+
+      // Brilho dourado (glow simulado)
+      const glow = c.createRadialGradient(cx, S*0.5, 0, cx, S*0.5, 80*sc);
+      glow.addColorStop(0, 'rgba(216,168,48,0.25)');
+      glow.addColorStop(1, 'transparent');
+      c.fillStyle = glow;
+      c.fillRect(0, 0, S, S);
+
+      // Lâmina
+      c.fillStyle = '#d8a830';
+      c.beginPath();
+      c.moveTo(256*sc, 72*sc);
+      c.lineTo(238*sc, 278*sc);
+      c.lineTo(256*sc, 300*sc);
+      c.lineTo(274*sc, 278*sc);
+      c.closePath();
+      c.fill();
+
+      // Linha central
+      c.strokeStyle = 'rgba(240,224,96,0.45)';
+      c.lineWidth = 2.5 * sc;
+      c.beginPath(); c.moveTo(256*sc, 78*sc); c.lineTo(256*sc, 282*sc); c.stroke();
+
+      // Guarda
+      c.fillStyle = '#d8a830';
+      c.beginPath();
+      roundRect(c, 186*sc, 282*sc, 140*sc, 24*sc, 12*sc);
+      c.fill();
+
+      // Cabo
+      c.fillStyle = '#7a5018';
+      c.beginPath();
+      roundRect(c, 248*sc, 306*sc, 16*sc, 84*sc, 8*sc);
+      c.fill();
+
+      // Linhas cabo
+      c.strokeStyle = 'rgba(216,168,48,0.35)';
+      c.lineWidth = 2 * sc;
+      [325,343,361,379].forEach(y => {
+        c.beginPath(); c.moveTo(248*sc, y*sc); c.lineTo(264*sc, y*sc); c.stroke();
+      });
+
+      // Pomo
+      c.fillStyle = '#d8a830';
+      c.beginPath();
+      c.ellipse(256*sc, 404*sc, 24*sc, 18*sc, 0, 0, Math.PI*2);
+      c.fill();
+
+      // Brilho da ponta
+      c.fillStyle = 'rgba(248,240,160,0.9)';
+      c.beginPath();
+      c.arc(256*sc, 78*sc, 6*sc, 0, Math.PI*2);
+      c.fill();
+
+      // Gemas da guarda
+      c.fillStyle = 'rgba(240,204,104,0.8)';
+      c.beginPath(); c.arc(190*sc, 294*sc, 9*sc, 0, Math.PI*2); c.fill();
+      c.beginPath(); c.arc(322*sc, 294*sc, 9*sc, 0, Math.PI*2); c.fill();
+    }
+
+    function roundRect(c, x, y, w, h, r) {
+      c.beginPath();
+      c.moveTo(x+r, y);
+      c.lineTo(x+w-r, y); c.arcTo(x+w, y, x+w, y+r, r);
+      c.lineTo(x+w, y+h-r); c.arcTo(x+w, y+h, x+w-r, y+h, r);
+      c.lineTo(x+r, y+h); c.arcTo(x, y+h, x, y+h-r, r);
+      c.lineTo(x, y+r); c.arcTo(x, y, x+r, y, r);
+      c.closePath();
+    }
+
+    function download(id, filename) {
+      const a = document.createElement('a');
+      a.download = filename;
+      a.href = document.getElementById(id).toDataURL('image/png');
+      a.click();
+    }
+
+    // Desenhar todos
+    ['c192','c512','c180'].forEach(id => drawIcon(document.getElementById(id)));
+  </script>
+</body>
+</html>
