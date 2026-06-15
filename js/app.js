@@ -225,6 +225,7 @@ function renderNav() {
     <ul class="nav-links">
       ${[['home','Central'],['mapa','Mapa'],['missoes','Missoes'],['habilidades','Habilidades'],['financas','Financas'],['conquistas','Conquistas']]
         .map(([p,l]) => `<li><a class="nav-link${currentPage===p?' active':''}" data-page="${p}" onclick="go('${p}')">${l}</a></li>`).join('')}
+      <li><button class="nav-link nav-logout" onclick="openSyncModal()">Sincronizar</button></li>
       <li><button class="nav-link nav-logout" onclick="doLogout()">Sair</button></li>
     </ul>`;
 }
@@ -1177,6 +1178,59 @@ function savePhaseEdit(pid) {
   saveState(); closeModal();
   toast('Fase atualizada', 'As datas foram salvas.');
   refreshCurrentPage();
+}
+
+/* ============================
+   SINCRONIZAÇÃO ENTRE DISPOSITIVOS
+   ============================ */
+
+function openSyncModal() {
+  const exportCode = btoa(unescape(encodeURIComponent(JSON.stringify(S))));
+  showModal(`
+    <div class="modal-title">Sincronizar Dispositivos</div>
+    <p style="font-size:0.85rem;color:var(--tx-2);margin-bottom:var(--sp-5);line-height:1.6">
+      Para transferir seus dados entre celular e notebook, copie o codigo abaixo no dispositivo de origem
+      e cole no dispositivo de destino.
+    </p>
+
+    <div class="form-group">
+      <label class="form-label">1. Copie este codigo (dispositivo atual)</label>
+      <textarea id="export-code" class="form-input" rows="4"
+        style="font-size:0.6rem;font-family:monospace;resize:none;word-break:break-all"
+        readonly>${exportCode}</textarea>
+      <button class="btn btn-outline" style="margin-top:var(--sp-2);width:100%"
+        onclick="navigator.clipboard.writeText(document.getElementById('export-code').value).then(()=>toast('Copiado','Cole no outro dispositivo.'))">
+        Copiar codigo
+      </button>
+    </div>
+
+    <div class="form-group" style="margin-top:var(--sp-5)">
+      <label class="form-label">2. Cole o codigo no dispositivo de destino</label>
+      <textarea id="import-code" class="form-input" rows="4"
+        placeholder="Cole aqui o codigo do outro dispositivo..."
+        style="font-size:0.6rem;font-family:monospace;resize:none;word-break:break-all"></textarea>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal()">Fechar</button>
+      <button class="btn btn-gold" onclick="importData()">Importar dados</button>
+    </div>`);
+}
+
+function importData() {
+  const raw = document.getElementById('import-code')?.value?.trim();
+  if (!raw) { toast('Codigo vazio', 'Cole o codigo antes de importar.'); return; }
+  try {
+    const parsed = JSON.parse(decodeURIComponent(escape(atob(raw))));
+    if (!parsed.phases || !parsed.missions) throw new Error('invalido');
+    S = parsed;
+    saveState();
+    closeModal();
+    toast('Dados importados!', 'Tudo sincronizado com sucesso.');
+    refreshCurrentPage();
+  } catch {
+    toast('Erro', 'Codigo invalido. Copie novamente do outro dispositivo.');
+  }
 }
 
 function openFinanceEdit(id) {

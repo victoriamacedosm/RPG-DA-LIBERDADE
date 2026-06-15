@@ -4,12 +4,12 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  /* ─── FUNDOS — madeira quente, não escuridão ─── */
-  --bg-page:    #3a2412;   /* Marrom quente médio — madeira de lei */
-  --bg-panel:   #4a2e16;   /* Painel de madeira */
-  --bg-raised:  #5a3a20;   /* Superfície elevada */
-  --bg-inset:   #2a1a0a;   /* Detalhe encaixado */
-  --bg-nav:     #1e1208;   /* Barra de navegação */
+  /* ─── FUNDOS — madeira média clara ─── */
+  --bg-page:    #5c3d20;   /* Madeira carvalho — base principal */
+  --bg-panel:   #6e4c28;   /* Painel um tom acima */
+  --bg-raised:  #7e5c34;   /* Superfície elevada */
+  --bg-inset:   #4a2e14;   /* Encaixe / detalhe mais fundo */
+  --bg-nav:     #2e1c0a;   /* Nav: ainda mais escuro para âncora visual */
 
   /* ─── PERGAMINHO — o coração visual ─── */
   --pg-100:  #f7ecd4;   /* Pergaminho mais claro */
@@ -49,11 +49,11 @@
   --xp:       #58368a;
   --xp-light: #7a52aa;
 
-  /* ─── TEXTO SOBRE FUNDO ESCURO ─── */
-  --tx-1:    #f0d8a8;   /* Primário — creme âmbar */
-  --tx-2:    #c4a070;   /* Secundário */
-  --tx-3:    #8a6840;   /* Terciário */
-  --tx-gold: #d8a830;   /* Dourado */
+  /* ─── TEXTO SOBRE FUNDO MÉDIO ─── */
+  --tx-1:    #f5ead0;   /* Primário — creme claro, não branco puro */
+  --tx-2:    #d8b888;   /* Secundário — creme âmbar */
+  --tx-3:    #a88050;   /* Terciário — dourado médio */
+  --tx-gold: #e0b840;   /* Dourado — mais brilhante no fundo médio */
 
   /* ─── TIPOGRAFIA ─── */
   --f-title: 'Cinzel', 'Palatino Linotype', 'Georgia', serif;
@@ -96,12 +96,12 @@ body {
   font-family: var(--f-body);
   line-height: 1.7;
   min-height: 100vh;
-  /* Brilho âmbar quente — luz de vela, não dungeon */
+  /* Madeira clara com veios sutis de luz */
   background-image:
-    radial-gradient(ellipse 90% 70% at 50% 20%,  rgba(160,90,30,0.25) 0%, transparent 60%),
-    radial-gradient(ellipse 70% 90% at 5%  50%,   rgba(120,60,20,0.2)  0%, transparent 55%),
-    radial-gradient(ellipse 70% 90% at 95% 50%,   rgba(120,60,20,0.2)  0%, transparent 55%),
-    radial-gradient(ellipse 100% 40% at 50% 100%, rgba(30,15,5,0.4)    0%, transparent 50%);
+    radial-gradient(ellipse 100% 60% at 50% 0%,   rgba(160,100,40,0.18) 0%, transparent 55%),
+    radial-gradient(ellipse 60%  80% at 0%   60%,  rgba(140, 80,30,0.12) 0%, transparent 50%),
+    radial-gradient(ellipse 60%  80% at 100% 60%,  rgba(140, 80,30,0.12) 0%, transparent 50%),
+    radial-gradient(ellipse 100% 35% at 50% 100%, rgba( 30, 15, 5,0.25) 0%, transparent 45%);
 }
 
 ::-webkit-scrollbar { width: 7px; }
