@@ -285,8 +285,6 @@ function renderNav() {
     <ul class="nav-links">
       ${[['home','Base'],['mapa','Mapa'],['missoes','Expedicoes'],['habilidades','Arsenal'],['financas','Tesouro'],['conquistas','Descobertas']]
         .map(([p,l]) => `<li><a class="nav-link${currentPage===p?' active':''}" data-page="${p}" onclick="go('${p}')">${l}</a></li>`).join('')}
-      <li><button class="nav-link nav-logout" onclick="openSyncModal()">Sincronizar</button></li>
-      <li><button class="nav-link nav-logout" onclick="doLogout()">Sair</button></li>
     </ul>`;
 }
 
